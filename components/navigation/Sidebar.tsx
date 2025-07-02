@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { sidebarLinks } from "@/constants/nav";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, LogOut } from "lucide-react";
@@ -11,6 +11,12 @@ import { ChevronLeft, ChevronRight, LogOut } from "lucide-react";
 export const Sidebar = () => {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
+  const [activePath, setActivePath] = useState("");
+
+  // Update active path only after component mounts on client
+  useEffect(() => {
+    setActivePath(pathname);
+  }, [pathname]);
 
   const toggleCollapse = () => setCollapsed(!collapsed);
 
@@ -52,7 +58,7 @@ export const Sidebar = () => {
           {/* Links */}
           <nav className="mt-4 flex flex-col gap-1 px-2">
             {sidebarLinks.map(({ label, icon: Icon, href, badge, dot }) => {
-              const isActive = pathname === href;
+              const isActive = activePath === href;
               return (
                 <Link
                   key={label}
